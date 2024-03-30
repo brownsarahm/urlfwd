@@ -11,11 +11,11 @@ lightweight url forwarding
 
 ## Roadmap
 
-- [ ] skip already existing files, instead of overwriting (if more efficient)
-- [ ] validate that there are no duplicates
-- [ ] create a command that appends to links.yml?
-- [ ] make auto-commit?
+- [x] skip already existing files, instead of overwriting (if more efficient)
+- [x] validate that there are no duplicates
+- [x] create a command that appends to links.yml?
+- [x] make auto-commit?
 - [ ] handle multi-link/small landing pages?
-- [ ] setup github action so that build occurs remotely
+- [x] setup github action so that build occurs remotely
 - [ ] refactor code to a separate repo so that it can be re-usable
 
