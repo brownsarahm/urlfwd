@@ -99,7 +99,8 @@ This page should forward to <a href="{url}">{url}</a>
 '''
 
 
-def files_from_dict(pages_to_create,overwrite=True,base_path='docs',logging=False,config_in=None):
+def files_from_dict(pages_to_create,overwrite=True,
+                    base_path='docs',logging=False,config_in=None):
     '''
     given a dictionary, create html files
     
@@ -107,6 +108,14 @@ def files_from_dict(pages_to_create,overwrite=True,base_path='docs',logging=Fals
     ----------
     pages_to_create : dictionary
         keys are names of pages, values are urls to redirect to
+    overwrite: bool
+        overwrite files that exist 
+    base_path : path or string
+        where to store generated site default(docs)
+    logging : bool
+        verbose mode or not
+    config_in : dict
+        configurations to overwrite default with
     
     '''
     if config_in:
