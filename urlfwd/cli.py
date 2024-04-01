@@ -56,7 +56,7 @@ def generate_links(source_yaml,retain,out_path,verbose,config_yaml,
     overwrite = not(retain)
     # call creator
     log = files_from_dict(files_to_create,overwrite,out_path,
-                          logging=verbose,config=config)
+                          logging=verbose,config_in=config)
 
     if verbose and log:
         click.echo(log)
