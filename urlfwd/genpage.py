@@ -1,4 +1,6 @@
 import os
+import qrcode
+from qrcode.image.pure import PyPNGImage
 
 # default extra settings
 config = {'author':'a user',
@@ -100,7 +102,8 @@ This page should forward to <a href="{url}">{url}</a>
 
 
 def files_from_dict(pages_to_create,overwrite=True,
-                    base_path='docs',logging=False,config_in=None):
+                    base_path='docs',genQRs = False, qrTOC='gallery',
+                    logging=False,config_in=None):
     '''
     given a dictionary, create html files
     
@@ -159,3 +162,105 @@ def files_from_dict(pages_to_create,overwrite=True,
         return '\n'.join(log)
     else:
         return ''
+
+
+
+qr_html = '''
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <title>QR for {name}</title>
+    <meta name="author" content="{author}" />
+    <meta property="og:title" content="{name}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{url}" />
+    <meta name="description" content="forwarding to {url}"/>
+    <link rel="canonical" href="{url}"/>
+</head>
+<body>
+
+<div style="text-align: center;">
+<img src="{img}" alt="QR code for {url}">
+<br>
+QR for  <a href="{url}">{name}</a>
+</div>
+</body>
+</html>
+'''
+
+
+def qrs_from_dict(pages_to_create,overwrite=True,
+                    base_path='docs',
+                    logging=False,config_in=None):
+    '''
+    given a dictionary, create html files
+    
+    Parameters
+    ----------
+    pages_to_create : dictionary
+        keys are names of pages, values are urls to redirect to
+    overwrite: bool
+        overwrite files that exist 
+    base_path : path or string
+        where to store generated site default(docs)
+    logging : bool
+        verbose mode or not
+    config_in : dict
+        configurations to overwrite default with
+    
+    '''
+    if config_in:
+        config.update(config_in)
+
+    if not(os.path.exists(base_path)):
+        os.mkdir(base_path)
+
+    qr_path = os.path.join(base_path,'qr')
+    if not(os.path.exists(qr_path)):
+        os.mkdir(qr_path)
+
+    if logging:
+        log = []
+    for path, url in pages_to_create.items():
+        # handle case of numbers in key
+        if not(type(path) == str):
+            path = str(path)
+
+        img_name = path + '.png'
+
+        contents = qr_html.format(url=url,name=path,img=img_name,
+                                  author=config['author'])
+
+        out_dir = os.path.join(qr_path,path)
+        out_file = os.path.join(out_dir,'index.html')
+        # do not create if overwriting and already exists, otherwise create 
+        #        (will error if exists and not overwriting)
+        if not(os.path.exists(out_dir)):
+            os.mkdir(out_dir)
+            if logging:
+                log.append('creating ' + out_dir)
+
+        if logging and os.path.exists(out_file):
+            log.append(path + ' exists')
+
+        # write the file out
+        if overwrite or not(os.path.exists(out_file)):
+
+            # generate qr and save it
+            img = qrcode.make(url)
+            img.save(os.path.join(out_dir,img_name))
+            with open(out_file,'w') as f:
+                f.write(contents)
+            if logging:
+                log.append('writing' + out_file)
+
+    # do at end
+    if logging:
+        # with open(os.path.join(out_dir,'log.txt'),'w') as f:
+        #     f.write('\n'.join(log))
+        return '\n'.join(log)
+    else:
+        return ''
+
+
+
