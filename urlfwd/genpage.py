@@ -1,6 +1,7 @@
 import os
 import qrcode
 
+import qrcode.image.svg
 
 # default extra settings
 config = {'author':'a user',
@@ -35,7 +36,7 @@ landing_html ='''
         <div class="card-footer text-muted">
             This domain (or subdomain) is used as a lightweight url shortener
             implemented with <a href="https://github.com/brownsarahm/urlfwd">urlfwd</a>. 
-            
+            <br>
             <a href="{about}">about {author}</a>
         </div>
     </div>
@@ -174,21 +175,32 @@ qr_html = '''
     <meta property="og:title" content="{name}" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{url}" />
-    <meta name="description" content="forwarding to {url}"/>
+    <meta name="description" content="qr for to {url}"/>
     <link rel="canonical" href="{url}"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
-<div style="text-align: center;">
-<img src="{img}" alt="QR code for {url}">
-<br>
-QR for  <a href="{url}">{name}</a>
-</div>
+<div class="card text-center col-12 col-md-6  mx-auto ">
+
+        <img class="card-img-top" src="{img}" alt="QR code for {url}">
+        
+        <div class="card-footer text-muted">
+            QR for  <a href="{url}">{name}</a>
+            
+        </div>
+    </div>
+
 </body>
 </html>
 '''
 
-
+# <div class="card-body">
+        # </div>
+# w-50 my-5
 def qrs_from_dict(pages_to_create,overwrite=True,
                     base_path='docs',
                     logging=False,config_in=None):
@@ -226,7 +238,7 @@ def qrs_from_dict(pages_to_create,overwrite=True,
         if not(type(path) == str):
             path = str(path)
 
-        img_name = path + '.png'
+        img_name = path + '.svg'
 
         contents = qr_html.format(url=url,name=path,img=img_name,
                                   author=config['author'])
@@ -247,7 +259,7 @@ def qrs_from_dict(pages_to_create,overwrite=True,
         if overwrite or not(os.path.exists(out_file)):
 
             # generate qr and save it
-            img = qrcode.make(url)
+            img = qrcode.make(url,image_factory = qrcode.image.svg.SvgPathImage)
             img.save(os.path.join(out_dir,img_name))
             with open(out_file,'w') as f:
                 f.write(contents)
