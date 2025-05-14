@@ -1,6 +1,6 @@
 import os
 import qrcode
-from qrcode.image.pure import PyPNGImage
+
 
 # default extra settings
 config = {'author':'a user',
