@@ -193,7 +193,7 @@ def qrs_from_dict(pages_to_create,overwrite=True,
                     base_path='docs',
                     logging=False,config_in=None):
     '''
-    given a dictionary, create html files
+    given a dictionary, create qr codes to each url and a landing page for each
     
     Parameters
     ----------
