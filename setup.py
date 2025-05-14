@@ -7,7 +7,7 @@ setup(
                 'urlfwd.cli'
                 ],
     install_requires=[
-        'Click', 'pyyaml'
+        'Click', 'pyyaml','qrcode'
     ],
     entry_points={
         'console_scripts': [
