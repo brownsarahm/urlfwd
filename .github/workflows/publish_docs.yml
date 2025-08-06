@@ -18,7 +18,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: 3.11
+        python-version: 3.12
 
     - name: Install dependencies
       run: |
@@ -32,10 +32,10 @@ jobs:
         make html
 
     # create artifact
-    - name: Create artifact
+    - name: Create and upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: urlfwd-docs
+        path: docs/_build/html
 
   # Deploy job
   deploy:
