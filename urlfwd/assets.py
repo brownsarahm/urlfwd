@@ -1,22 +1,15 @@
-# Use with a Github repo
 
-To use with github, add one or both of these to your repo
+readme_text = '''# URL Forwarding 
 
-```{important}
-These are here for completeness but `urlfwd init` should set these up 
-```
+lightweight url forwarding via [urlfwd](https://github.com/brownsarahm/urlfwd)
 
-## For autobuild when links.yml is edited
+- auto build action if `links.yml` is edited locally or manually in browser.
+- form based action for setting a new one from web interface both adding to `links.yml` and rebuilding
 
-add the following contents to `.github/workflows/build.yml`:
+automatically generates forwarding urls and QR codes with landing pages at qr/key'''
 
-```{eval-rst}
-.. autodata:: my_module.MY_CONSTANT
-    :annotation:
-```
 
-```yaml
-name: Make links and QR codes from source and deploy
+gh_deploy_yml = '''name: Make links and QR codes from source and deploy
 on:
   push:
     branches:
@@ -69,18 +62,10 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-          
-```
+'''
 
 
-## Form use
-
-Add the following to `.github/workflows/form_add.yml`
-
-then you can use a form instead of editing the yaml directly, the form will be on your actions tab of the repo, under the name `Adda link via form` on the left panel (not the center, that is logs)
-
-```yaml
-name: Add a link via form
+gh_form_yml = '''name: Add a link via form
 on:
   workflow_dispatch:
     inputs:
@@ -148,5 +133,4 @@ jobs:
 
           # Optional. Prevents the shell from expanding filenames. 
           # Details: https://www.gnu.org/software/bash/manual/html_node/Filename-Expansion.html
-          disable_globbing: true
-```
+          disable_globbing: true'''

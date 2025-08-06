@@ -4,11 +4,11 @@ import qrcode
 import qrcode.image.svg
 
 # default extra settings
-config = {'author':'a user',
+config_default = {'author':'a user',
           'title':'url shortening',
-          'body':'',
+          'about':'',
           'index':'<h2>Index</h2>\n',
-          'about':'https://github.com/brownsarahm/urlfwd'}
+          'author-url':'https://github.com/brownsarahm/urlfwd'}
 
 landing_html ='''
 <!DOCTYPE html>
@@ -30,14 +30,14 @@ landing_html ='''
             <h1>{title}</h1>
         </div>
         <div class="card-body">
-            {body}
+            {about}
             {index}
         </div>
         <div class="card-footer text-muted">
             This domain (or subdomain) is used as a lightweight url shortener
             implemented with <a href="https://github.com/brownsarahm/urlfwd">urlfwd</a>. 
             <br>
-            <a href="{about}">about {author}</a>
+            <a href="{author-url}">about {author}</a>
         </div>
     </div>
 </body>
@@ -62,6 +62,7 @@ def create_landing(config_in,base_path,full_dict=None,index=False):
     index : bool
         creat index
     '''
+    config = config_default.copy()
     config.update(config_in)
 
     if index:
@@ -135,6 +136,10 @@ def files_from_dict(pages_to_create,overwrite=True,
         if not(type(path) == str):
             path = str(path)
 
+        #  if nested info, pull out the actual url
+        if isinstance(url,dict):
+            url = url['url']
+
         contents = pg_html.format(url=url,name=path,
                                   author=config['author'])
         out_dir = os.path.join(base_path,path)
@@ -198,14 +203,59 @@ qr_html = '''
 </html>
 '''
 
+
+qr_html_detail = '''
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <title>QR for {name}</title>
+    <meta name="author" content="{author}" />
+    <meta property="og:title" content="{name}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{url}" />
+    <meta name="description" content="qr for to {url}"/>
+    <link rel="canonical" href="{url}"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="card text-center col-12 col-md-6  mx-auto ">
+
+        <img class="card-img-top" src="{img}" alt="QR code for {url}">
+        <div class="card-body">
+        {desc}
+        </div>
+        <div class="card-footer text-muted">
+            QR for  <a href="{url}">{name}</a>
+            
+        </div>
+    </div>
+
+</body>
+</html>
+'''
+
+default_desc = '''
+<h2>{title}</h2>
+{description}
+'''
+
+basic_desc = '''
+{description}
+'''
+
 # <div class="card-body">
         # </div>
 # w-50 my-5
 def qrs_from_dict(pages_to_create,overwrite=True,
+            flyer_pages=True,flyer_template_input='default',
                     base_path='docs',
                     logging=False,config_in=None):
     '''
-    given a dictionary, create qr codes to each url and a landing page for each
+    given a dictionary, create qr codes to each url and a flyer page for each
     
     Parameters
     ----------
@@ -213,6 +263,10 @@ def qrs_from_dict(pages_to_create,overwrite=True,
         keys are names of pages, values are urls to redirect to
     overwrite: bool
         overwrite files that exist 
+    flyer_pages: bool
+        to create an html file for each QR or not 
+    flyer_template_input: string
+        name of a stock flyer template (default, detailed) or html to use as the tempalte
     base_path : path or string
         where to store generated site default(docs)
     logging : bool
@@ -231,6 +285,15 @@ def qrs_from_dict(pages_to_create,overwrite=True,
     if not(os.path.exists(qr_path)):
         os.mkdir(qr_path)
 
+    if flyer_pages:
+        stock_flyer_templates = {'default':qr_html,
+                           'detail':qr_html_detail}
+        if flyer_template_input in stock_flyer_templates.keys():
+            flyer_template_html = stock_flyer_templates[flyer_template_input]
+        else:
+            flyer_template_html = flyer_template_input
+
+
     if logging:
         log = []
     for path, url in pages_to_create.items():
@@ -238,10 +301,13 @@ def qrs_from_dict(pages_to_create,overwrite=True,
         if not(type(path) == str):
             path = str(path)
 
-        img_name = path + '.svg'
+        #  if nested info, pull ou the actual url
+        if isinstance(url,dict):
+            info = url
+            url = url['url']
 
-        contents = qr_html.format(url=url,name=path,img=img_name,
-                                  author=config['author'])
+
+        img_name = path + '.svg'
 
         out_dir = os.path.join(qr_path,path)
         out_file = os.path.join(out_dir,'index.html')
@@ -258,13 +324,32 @@ def qrs_from_dict(pages_to_create,overwrite=True,
         # write the file out
         if overwrite or not(os.path.exists(out_file)):
 
+            if logging:
+                log.append('preparing to write files')
+
             # generate qr and save it
             img = qrcode.make(url,image_factory = qrcode.image.svg.SvgPathImage)
-            img.save(os.path.join(out_dir,img_name))
-            with open(out_file,'w') as f:
-                f.write(contents)
+
+            #  save to subfolder if pages, otherwise to qr folder
+            if flyer_pages:
+                img_file_out = os.path.join(out_dir,img_name)
+            else:
+                img_file_out = os.path.join(qr_path,img_name)
+
+            img.save(img_file_out)
+
             if logging:
-                log.append('writing' + out_file)
+                log.append('wrote' + img_file_out)
+            if flyer_pages:
+                #  only generate the html if needed
+                contents = flyer_template_html.format(url=url,name=path,img=img_name,
+                                  author=config['author'],**info)
+
+                with open(out_file,'w') as f:
+                    f.write(contents)
+
+                if logging:
+                    log.append('wrote' + out_file)
 
     # do at end
     if logging:
@@ -273,6 +358,5 @@ def qrs_from_dict(pages_to_create,overwrite=True,
         return '\n'.join(log)
     else:
         return ''
-
 
 

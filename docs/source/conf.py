@@ -49,11 +49,11 @@ html_theme = 'pydata_sphinx_theme'
 
 
 html_theme_options = {
-  "show_nav_level": 2,
+  "show_nav_level": 1,
   "header_links_before_dropdown": 6,
   "icon_links": [ 
         {
-            "name": "GitHub",
+            "name": "Source on GitHub",
             "url": "https://github.com/brownsarahm/urlwd",
             "icon": "fa-brands fa-github",
         },
@@ -65,7 +65,7 @@ html_theme_options = {
         {
             "name": "Example Usage",
             "url": "https://drsmb.co",
-            "icon": "fa-solid fa-web",
+            "icon": "fa-solid fa-link",
         },
         {
             "name": "Example Source",

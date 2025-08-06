@@ -5,8 +5,33 @@
 - manage links from a yaml file
 - also provides a utility to generate QR codes for the options
 
+## Get started
+
+```{warning}
+This requires a working python install
+```
+
+1. Install with `pip install git+https://github.com/brownsarahm/urlfwd.git`
+1. Create a folder for your url forwarding (eg if you're using `owner` github org or user to hoste `mkdir owner.github.io`) and `cd` in 
+1. Run `urlfwd init --usegit` (omit `--usegit` if you will not use git)
+1. (optional) Run `urlfwd config`
+1. use `urlfwd add -c` and follow the prompts or ommit `-c` to not commit and push 
+
+
 ## Usage modes
 
 - install locally, generate html files and QR codes you can host anywhere
 - Add a github action to a repo, store `links.yaml` in the repo and configure your short domain to that repo (a gh org might help here). Then you can add links by editing the file or with a form gh action. 
 - If you install locally, you can also manage it locally, but push to gh to render. 
+
+
+```{toctree}
+:caption: Contents
+:maxdepth: 2
+
+
+cli.md
+example.md
+gh.md
+api.md
+```
