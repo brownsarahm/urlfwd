@@ -1,4 +1,6 @@
+#  for docs
 sphinx
 sphinx-design
 sphinx_click
+pydata_sphinx_themev
 myst_nb
