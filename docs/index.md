@@ -1,2 +1,0 @@
-# Database free url shortening
-

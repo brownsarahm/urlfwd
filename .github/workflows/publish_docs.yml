@@ -1,0 +1,60 @@
+name: deploydocs
+
+# Only run this when the main branch changes, even if docs not directly edited bc they rely on the package
+on:
+  push:
+    branches:
+    - main
+
+
+# This job installs dependencies, build the docs, and pushes it to `gh-pages`
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4.2.2
+
+    # Install dependencies
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.11
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install -e . --no-deps --force-reinstall
+
+    # Build the book
+    - name: Build the docs
+      run: |
+        cd docs
+        make html
+
+    # create artifact
+    - name: Create artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: urlfwd-docs
+
+  # Deploy job
+  deploy:
+    # Add a dependency to the build job
+    needs: build-docs
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 
