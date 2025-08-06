@@ -2,5 +2,5 @@
 sphinx
 sphinx-design
 sphinx_click
-pydata_sphinx_themev
+pydata_sphinx_theme
 myst_nb
