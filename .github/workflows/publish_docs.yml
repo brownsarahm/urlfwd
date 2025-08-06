@@ -33,10 +33,9 @@ jobs:
 
     # create artifact
     - name: Create and upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-pages-artifact@v3
       with:
         path: docs/_build/html
-        name: github-pages
 
 
     - name: Deploy to GitHub Pages
