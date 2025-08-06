@@ -16,6 +16,7 @@ This requires a working python install
 1. Run `urlfwd init --usegit` (omit `--usegit` if you will not use git)
 1. (optional) Run `urlfwd config`
 1. use `urlfwd add -c` and follow the prompts or ommit `-c` to not commit and push 
+1. Periodically update your local install and run `urlfwd deploy --update`
 
 
 ## Usage modes

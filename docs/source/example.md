@@ -1,4 +1,4 @@
-# Example Deployment
+# Example 
 
 
 I use this for my domain `drsmb.co` with a github organization [`drsmb-co`](https://github/drsmb-co). 

@@ -2,11 +2,17 @@
 
 For each command the gray box shows the usage.  
 
+```{note}
 These are documented according to bash/unix convention. 
 - the `[]` do not get used, they indicate that there might be more than one item in that position
 - `[OPTIONS]` refers to any optional inputs or options 
 - `[ARGS]` refers to required inputs, or arguments
+```
 
+```{toctree}
+:caption: Contents
+:maxdepth: 2
+```
 
 
 ```{eval-rst}

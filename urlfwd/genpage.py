@@ -62,6 +62,7 @@ def create_landing(config_in,base_path,full_dict=None,index=False):
     index : bool
         creat index
     '''
+    
     config = config_default.copy()
     config.update(config_in)
 
@@ -81,6 +82,8 @@ def create_landing(config_in,base_path,full_dict=None,index=False):
     contents = landing_html.format(**config)
     with open(out_file,'w') as f:
         f.write(contents)
+        
+    return 
 
 
 pg_html = '''

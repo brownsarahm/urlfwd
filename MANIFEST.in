@@ -1,0 +1,2 @@
+include urlfwd/assets/*.md 
+include urlfwd/assets/*.yml

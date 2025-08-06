@@ -1,4 +1,4 @@
-# Use with a Github repo
+# Gh actions
 
 To use with github, add one or both of these to your repo
 
@@ -6,70 +6,14 @@ To use with github, add one or both of these to your repo
 These are here for completeness but `urlfwd init` should set these up 
 ```
 
+
 ## For autobuild when links.yml is edited
 
 add the following contents to `.github/workflows/build.yml`:
 
-```{eval-rst}
-.. autodata:: my_module.MY_CONSTANT
-    :annotation:
-```
-
-```yaml
-name: Make links and QR codes from source and deploy
-on:
-  push:
-    branches:
-      - 'main'
-
-
-jobs:
-# Deploy job
-  build_deploy:
-
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-    permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
-
-    # Deploy to the github-pages environment
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    # Specify runner + deployment step
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-
-      - name: Install & build
-        run: |
-          pip install git+https://github.com/brownsarahm/urlfwd.git
-
-      - name: Build
-        run: |
-          urlfwd gen links -v -l
-    
-    # delete (or comment out with a # the `genqrs` line to not build the QR codes)
-      - name: Generate QRs
-        run: |
-          urlfwd gen qrs 
-
-# by default the html files will be generated to go to ta dcs folder
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with: 
-          path: "./docs/"
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-          
+```{literalinclude} ../../urlfwd/assets/build.yml
+:name: build.yml 
+:caption: build.yml
 ```
 
 
@@ -77,7 +21,12 @@ jobs:
 
 Add the following to `.github/workflows/form_add.yml`
 
-then you can use a form instead of editing the yaml directly, the form will be on your actions tab of the repo, under the name `Adda link via form` on the left panel (not the center, that is logs)
+then you can use a form instead of editing the yaml directly, the form will be on your actions tab of the repo, under the name `Add a link via form` on the left panel (not the center, that is logs)
+
+```{literalinclude} ../../urlfwd/assets/form_add.yml
+:name: build.yml 
+:caption: build.yml
+```
 
 ```yaml
 name: Add a link via form

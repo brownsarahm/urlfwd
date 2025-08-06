@@ -2,8 +2,9 @@ import click
 import yaml
 import subprocess
 import os
+import importlib.resources
 
-from .assets import gh_deploy_yml, gh_form_yml, readme_text
+
 from .genpage import files_from_dict,create_landing,qrs_from_dict, config_default
 from .manage_links import add_link,find_duplicate_keys
 
@@ -281,11 +282,11 @@ def edit():
 
 
 @urlfwd_cli.command()
-@click.option('--usegit', is_flag=True,
+@click.option('--usegit', is_flag=True, prompt=True,
               help='the project will use git to track changes and push to remote')
-@click.option('--gh-deploy', is_flag=True,
+@click.option('--gh-deploy', is_flag=True,  prompt=True,
               help='the project will be hosted with gh pages')
-@click.option('--gh-form', is_flag=True,
+@click.option('--gh-form', is_flag=True,  prompt=True,
               help='the project will have a github form to add links')
 @click.option('--reset', is_flag=True,
               help='reset existing files')
@@ -322,28 +323,36 @@ def init(usegit, gh_deploy,gh_form,reset):
         click.echo('Initialized git repository')
 
     if gh_deploy and not os.path.exists('.github/workflows/publish_docs.yml'):
+        # read the yaml file from the package resources
+        with importlib.resources.open_text('urlfwd', os.path.join('assets','build.yml')) as f:
+            gh_deploy_yml = f.read()
+
+        # create the .github/workflows directory if it doesn't exist
         if not os.path.exists('.github/workflows'):
             os.makedirs('.github/workflows')
-    
+
+        # write the yaml file to .github/workflows/publish_docs.yml
         with open('.github/workflows/publish_docs.yml', 'w') as f:
             f.write(gh_deploy_yml)
         click.echo('Created GitHub Actions workflow for deployment')
 
-    if gh_form and not os.path.exists('.github/workflows/add_link.yml'):
+    if gh_form and not os.path.exists('.github/workflows/form_add.yml'):
+        # read the yaml file from the package resources
+        with importlib.resources.open_text('urlfwd', os.path.join('assets','form_add.yml')) as f:
+            gh_form_yml = f.read()
         if not os.path.exists('.github/workflows'):
             os.makedirs('.github/workflows')
     
-        with open('.github/workflows/add_link.yml', 'w') as f:
+        with open('.github/workflows/form_add.yml', 'w') as f:
             f.write(gh_form_yml)
         click.echo('Created GitHub Actions workflow for adding links via form')
     
     if not os.path.exists('README.md'):
+        # read the README.md file from the package resources
+        with importlib.resources.open_text('urlfwd', os.path.join('assets','README.md')) as f:
+            readme_text = f.read()
         with open('README.md', 'w') as f:
-            f.write('# URL Forwarding Project\n\n'
-                    'This project provides tools to create short links and QR codes '
-                    'for easy access to URLs using [urlfwd]().\n\n'
-                    '## Usage\n\n'
-                    'Run `urlfwd --help` for more information on available commands.')
+            f.write( readme_text)
         click.echo('Created README.md file')
     
 
@@ -363,9 +372,14 @@ def deploy(gh_deploy,gh_form,update,commit):
     '''
     set up github actions for deployment and/or adding links via form
     '''
-
+    with importlib.resources.open_text('urlfwd', os.path.join('assets','form_add.yml')) as f:
+            gh_form_yml = f.read()
+    
+    with importlib.resources.open_text('urlfwd', os.path.join('assets','build.yml')) as f:
+            gh_deploy_yml = f.read()
 
     if gh_deploy and  not os.path.exists('.github/workflows/build.yml'):
+        
         if not os.path.exists('.github/workflows'):
             os.makedirs('.github/workflows')
     
@@ -373,11 +387,12 @@ def deploy(gh_deploy,gh_form,update,commit):
             f.write(gh_deploy_yml)
         click.echo('Created GitHub Actions workflow for deployment')
 
-    if gh_form and not os.path.exists('.github/workflows/add_link.yml'):
+    if gh_form and not os.path.exists('.github/workflows/form_add.yml'):
+        
         if not os.path.exists('.github/workflows'):
             os.makedirs('.github/workflows')
     
-        with open('.github/workflows/add_link.yml', 'w') as f:
+        with open('.github/workflows/form_add.yml', 'w') as f:
             f.write(gh_form_yml)
         click.echo('Created GitHub Actions workflow for adding links via form')
 
@@ -386,8 +401,8 @@ def deploy(gh_deploy,gh_form,update,commit):
             with open('.github/workflows/build.yml', 'w') as f:
                 f.write(gh_deploy_yml)
             click.echo('Updated GitHub Actions workflow for deployment')
-        if os.path.exists('.github/workflows/add_link.yml'):
-            with open('.github/workflows/add_link.yml', 'w') as f:
+        if os.path.exists('.github/workflows/form_add.yml'):
+            with open('.github/workflows/form_add.yml', 'w') as f:
                 f.write(gh_form_yml)
             click.echo('Updated GitHub Actions workflow for adding links via form')
     
