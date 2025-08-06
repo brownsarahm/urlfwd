@@ -276,6 +276,7 @@ def qrs_from_dict(pages_to_create,overwrite=True,
         configurations to overwrite default with
     
     '''
+    config = config_default.copy()
     if config_in:
         config.update(config_in)
 
