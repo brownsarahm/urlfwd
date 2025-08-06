@@ -7,6 +7,7 @@ on:
     - main
 
 permissions:
+  pages: write      # to deploy to Pages
   id-token: write # Grant id-token: write permission at the workflow level
 
 # This job installs dependencies, build the docs, and pushes it to `gh-pages`
