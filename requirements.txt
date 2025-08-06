@@ -1,4 +1,3 @@
 sphinx
 sphinx-design
-sphinx-autodoc
 myst_nb
