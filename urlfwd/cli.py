@@ -176,6 +176,10 @@ def add(url,short_link,yaml_file,force,build, commit):
     '''
     add a new link with options or prompting
     '''
+    
+    url = str(url).strip()
+    short_link = (short_link).strip()
+    yaml_file = str(yaml_file).strip()
     if build:
         message,files_to_create = add_link(url,short_link,yaml_file, force,
                                            return_dict=build)

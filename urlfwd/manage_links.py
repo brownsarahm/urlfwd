@@ -131,16 +131,22 @@ def add_link(new_url,new_name,yaml_file, force=False,return_dict =False):
     with open(yaml_file,'r') as f:
         link_dict = yaml.safe_load(f)
 
-    if  new_name in link_dict.keys():
-        if not(force):
-            message = new_name + ' exists, not creating'
-            write = False
-        else:
-            message = new_name + ' exists, overwriting'
-            write = True
+    # set default first, then overwrite if needed
+    write = True
+    message = ''
+
+    if link_dict:
+        if  new_name in link_dict.keys():
+            if not(force):
+                message = new_name + ' exists, not creating'
+                write = False
+            else:
+                message = new_name + ' exists, overwriting'
     else:
-        write = True
-        message = ''
+        link_dict = {}
+        message = 'adding first link'
+                
+
 
     if write: 
         link_dict[new_name] = new_url
