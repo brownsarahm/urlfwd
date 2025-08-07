@@ -4,3 +4,9 @@ sphinx-design
 sphinx_click
 pydata_sphinx_theme
 myst_nb
+
+# for tool
+click
+qrcode
+Pillow
+pyyaml
