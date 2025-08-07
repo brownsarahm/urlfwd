@@ -12,11 +12,13 @@ This requires a working python install
 ```
 
 1. Install with `pip install git+https://github.com/brownsarahm/urlfwd.git`
-1. Create a folder for your url forwarding (eg if you're using `owner` github org or user to hoste `mkdir owner.github.io`) and `cd` in 
+1. Create a folder for your url forwarding (eg if you're using `owner` github org or user to host: `mkdir owner.github.io`) and `cd` in 
 1. Run `urlfwd init --usegit` (omit `--usegit` if you will not use git)
 1. (optional) Run `urlfwd config`
 1. use `urlfwd add -c` and follow the prompts or ommit `-c` to not commit and push 
-1. Periodically update your local install and run `urlfwd deploy --update`
+1. (if using github) [create a repo](https://github.com/new) with the same name. It can be public or private, but do not add any template or files. 
+1. (if using github) Follow the github  instructions to "or push an existing repository from the command line" from your new repo
+1. (if using github) Periodically update your local install and run `urlfwd deploy --update`
 
 
 ## Usage modes
