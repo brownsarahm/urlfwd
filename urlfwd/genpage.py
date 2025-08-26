@@ -310,6 +310,9 @@ def qrs_from_dict(pages_to_create,overwrite=True,
         if isinstance(url,dict):
             info = url
             url = url['url']
+        else:
+            info = {'url':url,
+                    'description':'short link to ' + path}
 
 
         img_name = path + '.svg'
@@ -344,11 +347,14 @@ def qrs_from_dict(pages_to_create,overwrite=True,
             img.save(img_file_out)
 
             if logging:
-                log.append('wrote' + img_file_out)
+                log.append('wrote ' + img_file_out)
             if flyer_pages:
                 #  only generate the html if needed
-                contents = flyer_template_html.format(url=url,name=path,img=img_name,
-                                  author=config['author'],**info)
+                info.update({'url':url,
+                             'name':path,
+                             'img':img_name,
+                             'author':config['author']})
+                contents = flyer_template_html.format(**info)
 
                 with open(out_file,'w') as f:
                     f.write(contents)
