@@ -233,7 +233,7 @@ qr_html_detail = '''
         {desc}
         </div>
         <div class="card-footer text-muted">
-            QR for  <a href="{url}">{name}</a>
+            QR for  <a href="{url}">drsmb.co/{name}</a>
             
         </div>
     </div>
